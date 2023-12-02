@@ -1,5 +1,5 @@
-import Point3 from './Point3';
-import Cube from './Cube';
+import Point3 from './Point3.js';
+import Cube from './Cube.js';
 
 export const ISOSPRITE = 'IsoSprite';
 const Sprite = Phaser.GameObjects.Sprite;
@@ -68,87 +68,6 @@ export default class IsoSprite extends Sprite {
     this._isoBounds = this.resetIsoBounds();
   }
 
-  /**
-   * The axonometric position of the IsoSprite on the x axis. Increasing the x coordinate will move the object down and to the right on the screen.
-   *
-   * @name IsoSprite#isoX
-   * @property {number} isoX - The axonometric position of the IsoSprite on the x axis.
-   */
-  get isoX() {
-    return this._isoPosition.x;
-  }
-
-  set isoX(value) {
-    this._isoPosition.x = value;
-    this._isoPositionChanged = this._isoBoundsChanged = true;
-    if (this.body){
-      this.body._reset = true;
-    }
-  }
-
-  /**
-   * The axonometric position of the IsoSprite on the y axis. Increasing the y coordinate will move the object down and to the left on the screen.
-   *
-   * @name IsoSprite#isoY
-   * @property {number} isoY - The axonometric position of the IsoSprite on the y axis.
-   */
-  get isoY() {
-    return this._isoPosition.y;
-  }
-
-  set isoY(value) {
-    this._isoPosition.y = value;
-    this._isoPositionChanged = this._isoBoundsChanged = true;
-
-    if (this.body){
-      this.body._reset = true;
-    }
-  }
-
-  /**
-   * The axonometric position of the IsoSprite on the z axis. Increasing the z coordinate will move the object directly upwards on the screen.
-   *
-   * @name Phaser.Plugin.Isometric.IsoSprite#isoZ
-   * @property {number} isoZ - The axonometric position of the IsoSprite on the z axis.
-   */
-  get isoZ() {
-    return this._isoPosition.z;
-  }
-
-  set isoZ(value) {
-    this._isoPosition.z = value;
-    this._isoPositionChanged = this._isoBoundsChanged = true;
-    if (this.body){
-      this.body._reset = true;
-    }
-  }
-
-  /**
-   * A Point3 object representing the axonometric position of the IsoSprite.
-   *
-   * @name Phaser.Plugin.Isometric.IsoSprite#isoPosition
-   * @property {Point3} isoPosition - The axonometric position of the IsoSprite.
-   * @readonly
-   */
-  get isoPosition() {
-    return this._isoPosition;
-  }
-
-  /**
-   * A Cube object representing the derived boundsof the IsoSprite.
-   *
-   * @name Phaser.Plugin.Isometric.IsoSprite#isoBounds
-   * @property {Point3} isoBounds - The derived 3D bounds of the IsoSprite.
-   * @readonly
-   */
-  get isoBounds() {
-    if (this._isoBoundsChanged || !this._isoBounds) {
-      this.resetIsoBounds();
-      this._isoBoundsChanged = false;
-    }
-
-    return this._isoBounds;
-  }
 
   /**
    * Internal function that performs the axonometric projection from 3D to 2D space.
@@ -205,6 +124,89 @@ export default class IsoSprite extends Sprite {
 
     return this._isoBounds;
   }
+
+   /**
+   * The axonometric position of the IsoSprite on the x axis. Increasing the x coordinate will move the object down and to the right on the screen.
+   *
+   * @name IsoSprite#isoX
+   * @property {number} isoX - The axonometric position of the IsoSprite on the x axis.
+   */
+    get isoX() {
+      return this._isoPosition.x;
+    }
+  
+    set isoX(value) {
+      this._isoPosition.x = value;
+      this._isoPositionChanged = this._isoBoundsChanged = true;
+      if (this.body){
+        this.body._reset = true;
+      }
+    }
+  
+    /**
+     * The axonometric position of the IsoSprite on the y axis. Increasing the y coordinate will move the object down and to the left on the screen.
+     *
+     * @name IsoSprite#isoY
+     * @property {number} isoY - The axonometric position of the IsoSprite on the y axis.
+     */
+    get isoY() {
+      return this._isoPosition.y;
+    }
+  
+    set isoY(value) {
+      this._isoPosition.y = value;
+      this._isoPositionChanged = this._isoBoundsChanged = true;
+  
+      if (this.body){
+        this.body._reset = true;
+      }
+    }
+  
+    /**
+     * The axonometric position of the IsoSprite on the z axis. Increasing the z coordinate will move the object directly upwards on the screen.
+     *
+     * @name Phaser.Plugin.Isometric.IsoSprite#isoZ
+     * @property {number} isoZ - The axonometric position of the IsoSprite on the z axis.
+     */
+    get isoZ() {
+      return this._isoPosition.z;
+    }
+  
+    set isoZ(value) {
+      this._isoPosition.z = value;
+      this._isoPositionChanged = this._isoBoundsChanged = true;
+      if (this.body){
+        this.body._reset = true;
+      }
+    }
+  
+    /**
+     * A Point3 object representing the axonometric position of the IsoSprite.
+     *
+     * @name Phaser.Plugin.Isometric.IsoSprite#isoPosition
+     * @property {Point3} isoPosition - The axonometric position of the IsoSprite.
+     * @readonly
+     */
+    get isoPosition() {
+      return this._isoPosition;
+    }
+  
+    /**
+     * A Cube object representing the derived boundsof the IsoSprite.
+     *
+     * @name Phaser.Plugin.Isometric.IsoSprite#isoBounds
+     * @property {Point3} isoBounds - The derived 3D bounds of the IsoSprite.
+     * @readonly
+     */
+    get isoBounds() {
+      if (this._isoBoundsChanged || !this._isoBounds) {
+        this.resetIsoBounds();
+        this._isoBoundsChanged = false;
+      }
+  
+      return this._isoBounds;
+    }
+    
 }
 
 

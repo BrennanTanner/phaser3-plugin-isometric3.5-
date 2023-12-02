@@ -1,4 +1,4 @@
-import Point3 from './Point3';
+import Point3 from './Point3.js';
 
 /**
  * @class Cube
@@ -173,6 +173,31 @@ class Cube {
    * @return {Array.<Point3>} The corners of this Cube expressed as an Array of eight Point3 objects.
    */
   getCorners() {
+    this._corners[0].setTo(this.x, this.y, this.z);
+    this._corners[1].setTo(this.x, this.y, this.z + this.height);
+    this._corners[2].setTo(this.x, this.y + this.widthY, this.z);
+    this._corners[3].setTo(this.x, this.y + this.widthY, this.z + this.height);
+    this._corners[4].setTo(this.x + this.widthX, this.y, this.z);
+    this._corners[5].setTo(this.x + this.widthX, this.y, this.z + this.height);
+    this._corners[6].setTo(this.x + this.widthX, this.y + this.widthY, this.z);
+    this._corners[7].setTo(this.x + this.widthX, this.y + this.widthY, this.z + this.height);
+
+    return this._corners;
+  }
+
+  /**
+   * Updates the Array of eight Point3 objects containing the corners of this Cube.
+   * @method Cube#getCorners
+   * @return {Array.<Point3>} The corners of this Cube expressed as an Array of eight Point3 objects.
+   * @param {any}
+   * @param {any}
+   * @param {any}
+   * @param {any}
+   * @param {any}
+   * @param {any}
+   * @param {any}
+   */
+   setCorners() {
     this._corners[0].setTo(this.x, this.y, this.z);
     this._corners[1].setTo(this.x, this.y, this.z + this.height);
     this._corners[2].setTo(this.x, this.y + this.widthY, this.z);

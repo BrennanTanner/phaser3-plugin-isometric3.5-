@@ -1,5 +1,5 @@
-import Point3 from '../Point3';
-import Cube from '../Cube';
+import Point3 from '../Point3.js';
+import Cube from '../Cube.js';
 
 const UP = 0;
 const DOWN = 1;
@@ -131,7 +131,7 @@ export default class Body {
     this.center = new Point3(sprite.isoX + this.halfWidthX, sprite.isoY + this.halfWidthY, sprite.isoZ + this.halfHeight);
 
     /**
-     * @property {Point3} velocity - The velocity in pixels per second sq. of the Body.
+     * @property {Point3} velocity - The velocity in pixels per second of the Body.
      */
     this.velocity = new Point3();
 
@@ -405,13 +405,13 @@ export default class Body {
      * @private
      */
     this._corners = [new Point3(this.x, this.y, this.z),
-      new Point3(this.x, this.y, this.z + this.height),
-      new Point3(this.x, this.y + this.widthY, this.z),
-      new Point3(this.x, this.y + this.widthY, this.z + this.height),
-      new Point3(this.x + this.widthX, this.y, this.z),
-      new Point3(this.x + this.widthX, this.y, this.z + this.height),
-      new Point3(this.x + this.widthX, this.y + this.widthY, this.z),
-      new Point3(this.x + this.widthX, this.y + this.widthY, this.z + this.height)
+    new Point3(this.x, this.y, this.z + this.height),
+    new Point3(this.x, this.y + this.widthY, this.z),
+    new Point3(this.x, this.y + this.widthY, this.z + this.height),
+    new Point3(this.x + this.widthX, this.y, this.z),
+    new Point3(this.x + this.widthX, this.y, this.z + this.height),
+    new Point3(this.x + this.widthX, this.y + this.widthY, this.z),
+    new Point3(this.x + this.widthX, this.y + this.widthY, this.z + this.height)
     ];
   }
 
@@ -519,7 +519,7 @@ export default class Body {
         this.checkWorldBounds();
       }
 
-      if (this.sprite.outOfBoundsKill && !world.bounds.intersects(this.sprite.isoBounds)){
+      if (this.sprite.outOfBoundsKill && !world.bounds.intersects(this.sprite.isoBounds)) {
         this.sprite.kill();
       }
     }
@@ -550,13 +550,13 @@ export default class Body {
       this.prev.z = this.position.z;
     }
 
-    if (this.deltaAbsX() >= this.deltaAbsY() && this.deltaAbsX() >= this.deltaAbsZ()){
+    if (this.deltaAbsX() >= this.deltaAbsY() && this.deltaAbsX() >= this.deltaAbsZ()) {
       if (this.deltaX() < 0) {
         this.facing = BACKWARDX;
       } else if (this.deltaX() > 0) {
         this.facing = FORWARDX;
       }
-    } else if (this.deltaAbsY() >= this.deltaAbsX() && this.deltaAbsY() >= this.deltaAbsZ()){
+    } else if (this.deltaAbsY() >= this.deltaAbsX() && this.deltaAbsY() >= this.deltaAbsZ()) {
       if (this.deltaY() < 0) {
         this.facing = BACKWARDY;
       } else if (this.deltaY() > 0) {
@@ -564,9 +564,9 @@ export default class Body {
       }
     } else {
       if (this.deltaZ() < 0) {
-        this.facing = DOWN;
+        //this.facing = DOWN;
       } else if (this.deltaZ() > 0) {
-        this.facing = UP;
+        //this.facing = UP;
       }
     }
 
@@ -623,7 +623,16 @@ export default class Body {
    * @method Body#destroy
    */
   destroy() {
-    this.sprite = null;
+    this.sprite.removeFromDisplayList();
+    this.sprite.removeFromUpdateList();
+    this.sprite.parent = null;
+    //this.position = null;
+    //this.velocity = null;
+    this.enable = false;
+    this.phase = null;
+    this.collideCallback = null;
+    this.processCallback = null;
+    this.callbackContext = null;
   }
 
   /**

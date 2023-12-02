@@ -28,9 +28,9 @@
  * @license      {@link http://opensource.org/licenses/MIT|MIT License}
  */
 
-import Projector from './Projector';
-import IsoSprite from './IsoSprite';
-export { default as IsoPhysics } from './physics/IsoPhysics';
+import Projector from './Projector.js';
+import IsoSprite from './IsoSprite.js';
+export { default as IsoPhysics } from './physics/IsoPhysics.js';
 
 //  Type consts
 
@@ -82,7 +82,7 @@ export default class IsoPlugin {
      * @param {number} y - Z position of the new IsoSprite.
      * @param {string|Phaser.RenderTexture|PIXI.Texture} key - This is the image or texture used by the Sprite during rendering. It can be a string which is a reference to the Cache entry, or an instance of a RenderTexture or PIXI.Texture.
      * @param {string|number} [frame] - If the sprite uses an image from a texture atlas or sprite sheet you can pass the frame here. Either a number for a frame ID or a string for a frame name.
-     * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
+     * @param {Phaser.GameObjects.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
      * @returns {IsoSprite} the newly created IsoSprite object.
      */
     Phaser.GameObjects.GameObjectFactory.register('isoSprite', function (x, y, z, key, group, frame = 0) {

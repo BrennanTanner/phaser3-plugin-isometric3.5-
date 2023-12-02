@@ -1,4 +1,4 @@
-import Cube from './Cube';
+import Cube from './Cube.js';
 
 /**
  * @class Octree
@@ -103,7 +103,7 @@ class Octree {
    * Populates this octree with the children of the given Group. In order to be added the child must exist and have a body property.
    *
    * @method Octree#populate
-   * @param {Phaser.Group} group - The Group to add to the octree.
+   * @param {Phaser.GameObjects.Group} group - The Group to add to the octree.
    */
   populate(group) {
     const len = group.children.size;

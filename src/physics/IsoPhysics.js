@@ -1,5 +1,5 @@
-import Point3 from '../Point3';
-import World from './World';
+import Point3 from '../Point3.js';
+import World from './World.js';
 
 /**
  * IsoPhysics Physics constructor.
@@ -31,6 +31,71 @@ export default class IsoPhysics {
   }
 
   /**
+     * Finds the Body or Game Object closest to a source point or object.
+     *
+     * If a `targets` argument is passed, this method finds the closest of those.
+     *
+     * If no `targets` argument is passed, this method finds the closest Dynamic Body.
+     *
+     * If two or more targets are the exact same distance from the source point, only the first target
+     * is returned.
+     *
+     * @method Isometric.IsoPhysics#closestBody
+     * @since 3.0.0
+     *
+     * @param {any} source - Any object with public `x` and `y` properties, such as a Game Object or Geometry object.
+     * @param {Phaser.GameObjects.GameObject[]} [targets] - The targets.
+     *
+     * @return {Phaser.GameObjects.GameObject} The target closest to the given source point.
+     */
+  closestBody(source, targets) {
+    if (!targets) {
+      targets = this.world.bodies.entries;
+    }
+
+    var min = Number.MAX_VALUE;
+    var closest = null;
+    //var x = source.x;
+    //var y = source.y;
+    var len = targets.length;
+
+    for (var i = 0; i < len; i++) {
+      var target = targets[i];
+      var body = target.body || target;
+
+      if (source === target || source === body || source === body.gameObject || source === body.center) {
+        continue;
+      }
+
+      var distance = this.distanceBetweenSquared(source, target);
+
+      if (distance < min) {
+        closest = target;
+        min = distance;
+      }
+    }
+
+    return closest;
+  }
+
+  /**
+   * Gets each member of a given group for use else where (For example: Getting each member of a group and finding their distance to a point or object.)
+   *
+   * @method Isometric.IsoPhysics#getEachofGroup
+   * @param {Phaser.GameObjects.Group} [group] - The group to get children from.
+   * @return {Phaser.GameObjects.GameObject} Each game object to return.
+   */
+  getEachofGroup(group) {
+    var children = group.getChildren();
+    var len = children.length;
+
+    for (var i = 0; i < len; i++) {
+      var target = children[i];
+    }
+    return target;
+  }
+
+  /**
    * Find the distance between two display objects (like Sprites).
    *
    * @method Isometric.IsoPhysics#distanceBetween
@@ -39,11 +104,27 @@ export default class IsoPhysics {
    * @return {number} The distance between the source and target objects.
    */
   distanceBetween(source, target) {
-    this._dx = source.x - target.x;
-    this._dy = source.y - target.y;
-    this._dz = source.z - target.z;
+    this._dx = source.body.position.x - target.body.position.x;
+    this._dy = source.body.position.y - target.body.position.y;
+    this._dz = source.body.position.z - target.body.position.z;
 
     return Math.sqrt(this._dx * this._dx + this._dy * this._dy + this._dz * this._dz);
+  }
+
+  /**
+   * Find the squared distance between two display objects (like Sprites).
+   *
+   * @method Isometric.IsoPhysics#distanceBetweenSquared
+   * @param {any} source - The Display Object to test from.
+   * @param {any} target - The Display Object to test to.
+   * @return {number} The distance between the source and target objects.
+   */
+  distanceBetweenSquared(source, target) {
+    this._dx = source.body.position.x - target.body.position.x;
+    this._dy = source.body.position.y - target.body.position.y;
+    this._dz = source.body.position.z - target.body.position.z;
+
+    return (this._dx * this._dx + this._dy * this._dy + this._dz * this._dz);
   }
 
   /**
@@ -58,8 +139,8 @@ export default class IsoPhysics {
    * @return {number} The distance between the object and the x/y coordinates.
    */
   distanceToXY(displayObject, x, y) {
-    this._dx = displayObject.x - x;
-    this._dy = displayObject.y - y;
+    this._dx = displayObject.body.position.x - x;
+    this._dy = displayObject.body.position.y - y;
 
     return Math.sqrt(this._dx * this._dx + this._dy * this._dy);
   }
@@ -77,9 +158,9 @@ export default class IsoPhysics {
    * @return {number} The distance between the object and the x/y coordinates.
    */
   distanceToXYZ(displayObjectBody, x, y, z) {
-    this._dx = displayObjectBody.x - x;
-    this._dy = displayObjectBody.y - y;
-    this._dz = displayObjectBody.z - z;
+    this._dx = displayObjectBody.body.position.x - x;
+    this._dy = displayObjectBody.body.position.y - y;
+    this._dz = displayObjectBody.body.position.z - z;
 
     return Math.sqrt(this._dx * this._dx + this._dy * this._dy + this._dz * this._dz);
   }
@@ -117,10 +198,10 @@ export default class IsoPhysics {
   anglesToXYZ(displayObjectBody, x, y, z) {
     // Spherical polar coordinates
     var r = this.distanceToXYZ(displayObjectBody, x, y, z);
-    var theta = Math.atan2(y - displayObjectBody.y, x - displayObjectBody.x);
-    var phi   = Math.acos((z - displayObjectBody.z)/ r);
+    var theta = Math.atan2(y - displayObjectBody.body.y, x - displayObjectBody.body.x);
+    var phi = Math.acos((z - displayObjectBody.body.z) / r);
 
-    return {r:r,theta:theta,phi:phi};
+    return { r: r, theta: theta, phi: phi };
   }
 
   /**
@@ -153,7 +234,7 @@ export default class IsoPhysics {
    * @return {Point3} - A Point where point.x contains the velocity x value and so on for y and z.
    */
   velocityFromAngles(theta, phi, speed) {
-    if (phi === undefined) { phi = Math.sin(Math.PI/2); }
+    if (phi === undefined) { phi = Math.sin(Math.PI / 2); }
     if (speed === undefined) { speed = 60; }
 
     return new Point3(
@@ -186,10 +267,10 @@ export default class IsoPhysics {
     if (ySpeedMax === undefined) { ySpeedMax = 500; }
     if (zSpeedMax === undefined) { zSpeedMax = 500; }
 
-    var a = this.anglesToXYZ(displayObject.body, x, y,z);
-    var v = this.velocityFromAngles(a.theta,a.phi,speed);
+    var a = this.anglesToXYZ(displayObject.body, x, y, z);
+    var v = this.velocityFromAngles(a.theta, a.phi, speed);
 
-    displayObject.body.acceleration.setTo(v.x,v.y,v.z);
+    displayObject.body.acceleration.setTo(v.x, v.y, v.z);
     displayObject.body.maxVelocity.setTo(xSpeedMax, ySpeedMax, zSpeedMax);
 
     return a.theta;
@@ -222,10 +303,10 @@ export default class IsoPhysics {
 
     if (maxTime > 0) {
       //  We know how many pixels we need to move, but how fast?
-      speed = this.distanceToXYZ(displayObject.body, x, y ,z) / (maxTime / 1000);
+      speed = this.distanceToXYZ(displayObject, x, y, z) / (maxTime / 1000);
     }
-    var a = this.anglesToXYZ(displayObject.body, x, y,z);
-    var v = this.velocityFromAngles(a.theta,a.phi,speed);
+    var a = this.anglesToXYZ(displayObject, x, y, z);
+    var v = this.velocityFromAngles(a.theta, a.phi, speed);
 
     displayObject.body.velocity.copyFrom(v);
 
@@ -248,7 +329,25 @@ export default class IsoPhysics {
    * @return {number} The angle (in radians).
    */
   moveToObject(displayObject, destination, speed, maxTime) {
-    return this.moveToXYZ(displayObject, destination.x, destination.y, destination.z, speed, maxTime);
+    return this.moveToXYZ(displayObject, destination.body.position.x, destination.body.position.y, destination.body.position.z, speed, maxTime);
+  }
+  /**
+   * Move the given display object towards the destination object's x/y position at a steady velocity.
+   * If you specify a maxTime then it will adjust the speed (overwriting what you set) so it arrives at the destination in that number of seconds.
+   * Timings are approximate due to the way browser timers work. Allow for a variance of +- 50ms.
+   * Note: The display object does not continuously track the target. If the target changes location during transit the display object will not modify its course.
+   * Note: The display object doesn't stop moving once it reaches the destination coordinates.
+   * Note: Doesn't take into account acceleration, maxVelocity or drag (if you've set drag or acceleration too high this object may not move at all)
+   *
+   * @method Phaser.Physics.Isometric.IsoPhysics#moveToObjectXY
+   * @param {any} displayObject - The display object to move.
+   * @param {any} destination - The display object to move towards. Can be any object but must have visible x/y properties.
+   * @param {number} [speed=60] - The speed it will move, in pixels per second (default is 60 pixels/sec)
+   * @param {number} [maxTime=0] - Time given in milliseconds (1000 = 1 sec). If set the speed is adjusted so the object will arrive at destination in the given number of ms.
+   * @return {number} The angle (in radians).
+   */
+  moveToObjectXY(displayObject, destination, speed, maxTime) {
+    return this.moveToXYZ(displayObject, destination.body.position.x, destination.body.position.y, 0, speed, maxTime);
   }
 
   /**
@@ -267,7 +366,7 @@ export default class IsoPhysics {
    */
   moveToPointer(displayObject, speed, pointer, maxTime) {
     pointer = pointer || this.game.input.activePointer;
-    var isoPointer = this.game.iso.unproject(pointer.position,undefined,displayObject.body.z);
+    var isoPointer = this.game.iso.unproject(pointer.position, undefined, displayObject.body.z);
     isoPointer.z = displayObject.body.z;
 
     if (typeof speed === 'undefined') {
@@ -279,13 +378,13 @@ export default class IsoPhysics {
 
     if (maxTime > 0) {
       //  We know how many pixels we need to move, but how fast?
-      speed = this.distanceToXYZ(displayObject.body, isoPointer.x, isoPointer.y ,isoPointer.z) / (maxTime / 1000);
+      speed = this.distanceToXYZ(displayObject.body, isoPointer.x, isoPointer.y, isoPointer.z) / (maxTime / 1000);
     }
-    var a = this.anglesToXYZ(displayObject.body, isoPointer.x, isoPointer.y,isoPointer.z);
-    var v = this.velocityFromAngles(a.theta,a.phi,speed);
+    var a = this.anglesToXYZ(displayObject.body, isoPointer.x, isoPointer.y, isoPointer.z);
+    var v = this.velocityFromAngles(a.theta, a.phi, speed);
 
-    displayObject.body.velocity.x=v.x;
-    displayObject.body.velocity.y=v.y;
+    displayObject.body.velocity.x = v.x;
+    displayObject.body.velocity.y = v.y;
 
     return a.theta;
   }

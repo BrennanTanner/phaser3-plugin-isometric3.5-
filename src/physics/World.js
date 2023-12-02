@@ -1,9 +1,9 @@
-import Body from './Body';
-import Point3 from '../Point3';
-import Cube from '../Cube';
-import Octree from '../Octree';
+import Body from './Body.js';
+import Point3 from '../Point3.js';
+import Cube from '../Cube.js';
+import Octree from '../Octree.js';
 
-import { ISOSPRITE } from '../IsoSprite';
+import { ISOSPRITE } from '../IsoSprite.js';
 
 const {  GameObjects, Structs } = Phaser;
 
@@ -175,7 +175,7 @@ export default class World {
    * A game object can only have 1 physics body active at any one time, and it can't be changed until the object is destroyed.
    *
    * @method IsoPhysics#enable
-   * @param {object|array|Phaser.Group} object - The game object to create the physics body on. Can also be an array or Group of objects, a body will be created on every child that has a `body` property.
+   * @param {object|array|Phaser.GameObjects.Group} object - The game object to create the physics body on. Can also be an array or Group of objects, a body will be created on every child that has a `body` property.
    * @param {boolean} [children=true] - Should a body be created on all children of this object? If true it will recurse down the display list as far as it can go.
    */
   enable(object, children = true) {
@@ -582,9 +582,9 @@ export default class World {
         this._overlap = 0;
       } else {
         body1.touching.none = false;
-        body1.touching.down = true;
+        body1.touching.up = true;
         body2.touching.none = false;
-        body2.touching.up = true;
+        body2.touching.down = true;
       }
     } else if (body1.deltaZ() < body2.deltaZ()) {
       //  Body1 is moving up and/or Body2 is moving down
@@ -594,9 +594,9 @@ export default class World {
         this._overlap = 0;
       } else {
         body1.touching.none = false;
-        body1.touching.up = true;
+        body1.touching.down = true;
         body2.touching.none = false;
-        body2.touching.down = true;
+        body2.touching.up = true;
       }
     }
 
@@ -660,8 +660,8 @@ export default class World {
    * NOTE: This function is not recursive, and will not test against children of objects passed (i.e. Groups within Groups).
    *
    * @method IsoPhysics#overlap
-   * @param {IsoSprite|Phaser.Group} object1 - The first object to check. Can be an instance of IsoSprite or Phaser.Group.
-   * @param {IsoSprite|Phaser.Group|array} object2 - The second object or array of objects to check. Can be IsoSprite or Phaser.Group.
+   * @param {IsoSprite|Phaser.GameObjects.Group} object1 - The first object to check. Can be an instance of IsoSprite or Phaser.GameObjects.Group.
+   * @param {IsoSprite|Phaser.GameObjects.Group|array} object2 - The second object or array of objects to check. Can be IsoSprite or Phaser.GameObjects.Group.
    * @param {function} [overlapCallback=null] - An optional callback function that is called if the objects overlap. The two objects will be passed to this function in the same order in which you specified them.
    * @param {function} [processCallback=null] - A callback function that lets you perform additional checks against the two objects if they overlap. If this is set then overlapCallback will only be called if processCallback returns true.
    * @param {object} [callbackContext] - The context in which to run the callbacks.
@@ -694,8 +694,8 @@ export default class World {
    * NOTE: This function is not recursive, and will not test against children of objects passed (i.e. Groups within Groups).
    *
    * @method IsoPhysics#collide
-   * @param {IsoSprite|Phaser.Group} object1 - The first object to check. Can be an instance of IsoSprite or Phaser.Group.
-   * @param {IsoSprite|Phaser.Group|array} object2 - The second object or array of objects to check. Can be IsoSprite or Phaser.Group.
+   * @param {IsoSprite|Phaser.GameObjects.Group} object1 - The first object to check. Can be an instance of IsoSprite or Phaser.GameObjects.Group.
+   * @param {IsoSprite|Phaser.GameObjects.Group|array} object2 - The second object or array of objects to check. Can be IsoSprite or Phaser.GameObjects.Group.
    * @param {function} [collideCallback=null] - An optional callback function that is called if the objects collide. The two objects will be passed to this function in the same order in which you specified them, unless you are colliding Group vs. Sprite, in which case Sprite will always be the first parameter.
    * @param {function} [processCallback=null] - A callback function that lets you perform additional checks against the two objects if they overlap. If this is set then collision will only happen if processCallback returns true. The two objects will be passed to this function in the same order in which you specified them.
    * @param {object} [callbackContext] - The context in which to run the callbacks.
@@ -724,8 +724,8 @@ export default class World {
    *
    * @method IsoPhysics#collideHandler
    * @private
-   * @param {IsoSprite|Phaser.Group} object1 - The first object to check. Can be an instance of IsoSprite or Phaser.Group.
-   * @param {IsoSprite|Phaser.Group} object2 - The second object to check. Can be an instance of IsoSprite or Phaser.Group. Can also be an array of objects to check.
+   * @param {IsoSprite|Phaser.GameObjects.Group} object1 - The first object to check. Can be an instance of IsoSprite or Phaser.GameObjects.Group.
+   * @param {IsoSprite|Phaser.GameObjects.Group} object2 - The second object to check. Can be an instance of IsoSprite or Phaser.GameObjects.Group. Can also be an array of objects to check.
    * @param {function} collideCallback - An optional callback function that is called if the objects collide. The two objects will be passed to this function in the same order in which you specified them.
    * @param {function} processCallback - A callback function that lets you perform additional checks against the two objects if they overlap. If this is set then collision will only happen if processCallback returns true. The two objects will be passed to this function in the same order in which you specified them.
    * @param {object} callbackContext - The context in which to run the callbacks.
@@ -733,7 +733,7 @@ export default class World {
    */
   collideHandler(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly) {
     //  Only collide valid objects
-    if (!object2 && object1.type === Phaser.GROUP) {
+    if (object1.type instanceof Phaser.GameObjects.Group && !object2) {
       this.collideGroupVsSelf(object1, collideCallback, processCallback, callbackContext, overlapOnly);
       return;
     }
@@ -743,15 +743,15 @@ export default class World {
       if (object1.type === ISOSPRITE) {
         if (object2.type === ISOSPRITE) {
           this.collideSpriteVsSprite(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly);
-        } else if (object2.type === Phaser.GROUP) {
+        } else if (object2.type instanceof Phaser.GameObjects.Group) {
           this.collideSpriteVsGroup(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly);
         }
       }
       //  GROUPS
-      else if (object1.type === Phaser.GROUP) {
+      else if (object1.type instanceof Phaser.GameObjects.Group) {
         if (object2.type === ISOSPRITE) {
           this.collideSpriteVsGroup(object2, object1, collideCallback, processCallback, callbackContext, overlapOnly);
-        } else if (object2.type === Phaser.GROUP) {
+        } else if (object2.type === Phaser.GameObjects.Group) {
           this.collideGroupVsGroup(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly);
         }
       }
@@ -791,7 +791,7 @@ export default class World {
    * @method IsoPhysics#collideSpriteVsGroup
    * @private
    * @param {IsoSprite} sprite - The sprite to check.
-   * @param {Phaser.Group} group - The Group to check.
+   * @param {Phaser.GameObjects.Group} group - The Group to check.
    * @param {function} collideCallback - An optional callback function that is called if the objects collide. The two objects will be passed to this function in the same order in which you specified them.
    * @param {function} processCallback - A callback function that lets you perform additional checks against the two objects if they overlap. If this is set then collision will only happen if processCallback returns true. The two objects will be passed to this function in the same order in which you specified them.
    * @param {object} callbackContext - The context in which to run the callbacks.
@@ -837,7 +837,7 @@ export default class World {
    *
    * @method IsoPhysics#collideGroupVsSelf
    * @private
-   * @param {Phaser.Group} group - The Group to check.
+   * @param {Phaser.GameObjects.Group} group - The Group to check.
    * @param {function} collideCallback - An optional callback function that is called if the objects collide. The two objects will be passed to this function in the same order in which you specified them.
    * @param {function} processCallback - A callback function that lets you perform additional checks against the two objects if they overlap. If this is set then collision will only happen if processCallback returns true. The two objects will be passed to this function in the same order in which you specified them.
    * @param {object} callbackContext - The context in which to run the callbacks.
@@ -874,8 +874,8 @@ export default class World {
    *
    * @method IsoPhysics#collideGroupVsGroup
    * @private
-   * @param {Phaser.Group} group1 - The first Group to check.
-   * @param {Phaser.Group} group2 - The second Group to check.
+   * @param {Phaser.GameObjects.Group} group1 - The first Group to check.
+   * @param {Phaser.GameObjects.Group} group2 - The second Group to check.
    * @param {function} collideCallback - An optional callback function that is called if the objects collide. The two objects will be passed to this function in the same order in which you specified them.
    * @param {function} processCallback - A callback function that lets you perform additional checks against the two objects if they overlap. If this is set then collision will only happen if processCallback returns true. The two objects will be passed to this function in the same order in which you specified them.
    * @param {object} callbackContext - The context in which to run the callbacks.
