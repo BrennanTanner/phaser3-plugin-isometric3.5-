@@ -733,7 +733,7 @@ export default class World {
    */
   collideHandler(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly) {
     //  Only collide valid objects
-    if (object1.type instanceof Phaser.GameObjects.Group && !object2) {
+    if (object1 instanceof Phaser.GameObjects.Group && !object2) {
       this.collideGroupVsSelf(object1, collideCallback, processCallback, callbackContext, overlapOnly);
       return;
     }
@@ -748,7 +748,7 @@ export default class World {
         }
       }
       //  GROUPS
-      else if (object1.type instanceof Phaser.GameObjects.Group) {
+      else if (object1 instanceof Phaser.GameObjects.Group) {
         if (object2.type === ISOSPRITE) {
           this.collideSpriteVsGroup(object2, object1, collideCallback, processCallback, callbackContext, overlapOnly);
         } else if (object2.type === Phaser.GameObjects.Group) {
