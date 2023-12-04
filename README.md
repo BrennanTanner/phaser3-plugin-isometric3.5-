@@ -1,4 +1,4 @@
-This is a **WIP** fork of [lewster32/phaser-plugin-isometric](https://github.com/lewster32/phaser-plugin-isometric) to make it work with Phaser 3.
+This is a **WIP** fork of [lewster32/phaser-plugin-isometric](https://github.com/lewster32/phaser-plugin-isometric) & [sebashwa/phaser3-plugin-isometric](https://github.com/sebashwa/phaser3-plugin-isometric/issues) to make it work with Phaser 3.70.0+
 
 ## Description
 Phaser Isometric is a comprehensive axonometric plugin for Phaser which provides an API for handling axonometric projection of assets in 3D space to the screen.

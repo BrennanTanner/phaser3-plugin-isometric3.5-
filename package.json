@@ -1,6 +1,6 @@
 {
   "name": "phaser3-plugin-isometric3.5",
-  "description": "Feature-packed axonometric plugin for Phaser 3 which stays true to the Phaser API. (forked to support 3.5+ credit to LordEwans)",
+  "description": "Feature-packed axonometric plugin for Phaser 3 which stays true to the Phaser API. (forked and updated to support Phaser 3.7 credit to LordEwans for 3.5 updates)",
   "contributors": {
     "email": "sebashwa@mailbox.org"
   },
@@ -13,7 +13,7 @@
     "axonometric"
   ],
   "license": "MIT",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
