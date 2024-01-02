@@ -11,11 +11,7 @@ module.exports = {
     "rules": {
         "indent": [
             "error",
-            2
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
+            3
         ],
         "quotes": [
             "error",

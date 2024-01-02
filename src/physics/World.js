@@ -733,7 +733,7 @@ export default class World {
    */
   collideHandler(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly) {
     //  Only collide valid objects
-    if (object1 instanceof Phaser.GameObjects.Group && !object2) {
+    if (object1 instanceof Phaser.GameObjects.Group && !object2 ||object1.type == 'Group' && !object2) {
       this.collideGroupVsSelf(object1, collideCallback, processCallback, callbackContext, overlapOnly);
       return;
     }
@@ -748,14 +748,15 @@ export default class World {
         }
       }
       //  GROUPS
-      else if (object1 instanceof Phaser.GameObjects.Group) {
+      else if (object1 instanceof Phaser.GameObjects.Group || object1.type == 'Group') {
         if (object2.type === ISOSPRITE) {
           this.collideSpriteVsGroup(object2, object1, collideCallback, processCallback, callbackContext, overlapOnly);
-        } else if (object2.type === Phaser.GameObjects.Group) {
+        } else if (object2.type === Phaser.GameObjects.Group || object2.type == 'Group') {
           this.collideGroupVsGroup(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly);
         }
       }
     }
+    
   }
 
   /**
@@ -806,7 +807,7 @@ export default class World {
       for (i = 0, len = group.children.size; i < len; i++) {
         const child = group.children.entries[i];
         if (child) {
-          this.collideSpriteVsSprite(sprite, child, collideCallback, processCallback, callbackContext, overlapOnly);
+          this.collideSpriteVsSprite(sprite.type === ISOSPRITE? sprite.body: sprite, child, collideCallback, processCallback, callbackContext, overlapOnly);
         }
       }
     } else {
@@ -821,9 +822,9 @@ export default class World {
 
       for (i = 0, len = this._potentials.length; i < len; i++) {
         //  We have our potential suspects, are they in this group?
-        if (this.separate(sprite.body, this._potentials[i], processCallback, callbackContext, overlapOnly)) {
+        if (this.separate(sprite.body.type === ISOSPRITE? sprite.body.body: sprite.body, this._potentials[i].type === ISOSPRITE? this._potentials[i].body: this._potentials[i], processCallback, callbackContext, overlapOnly)) {
           if (collideCallback) {
-            collideCallback.call(callbackContext, sprite, this._potentials[i].sprite);
+            collideCallback.call(callbackContext, sprite, this._potentials[i].type === ISOSPRITE?this._potentials[i]:this._potentials[i].sprite);
           }
 
           this._total++;
@@ -857,8 +858,8 @@ export default class World {
 
         if (spriteOne && spriteTwo) {
           this.collideSpriteVsSprite(
-            spriteOne,
-            spriteTwo,
+            spriteOne.type === "IsoSprite" ?spriteOne:spriteOne.body,
+            spriteTwo.type === "IsoSprite" ?spriteTwo:spriteTwo.body,
             collideCallback,
             processCallback,
             callbackContext,

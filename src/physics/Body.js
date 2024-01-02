@@ -958,7 +958,7 @@ export default class Body {
     this.position.z = value;
   }
 
-  debugRender(context, color = 'rgba(0,255,0,0.4)', filled = true) {
+  debugRender(context, color = 'rgba(0,255,0,0.4)', filled = false) {
     var points = [];
     var corners = this.getCorners();
 
